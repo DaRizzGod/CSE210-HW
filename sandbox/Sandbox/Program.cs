@@ -1,130 +1,76 @@
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.IO;
 using System.Linq;
 
-
-public class JournalEntry
-{
-    public DateTime _entryDateTime {get; set;}
-    public string _entryPrompt {get; set;}
-    public string _entryContent {get; set;}
-
-    public JournalEntry(string prompt, string content)
+class Program
+{ 
+    static void Main()
     {
-        _entryDateTime = DateTime.Now;
-        _entryPrompt = prompt;
-        _entryContent = content;
-    }
+        Console.WriteLine("Enter the scripture: ");
+        string scripture = Console.ReadLine();
 
-    public void DisplayEntry()
-    {
-        Console.WriteLine($"Date: {_entryDateTime}");
-        Console.WriteLine($"Prompt: {_entryPrompt}");
-        Console.WriteLine($"Entry: {_entryContent}");
-    }
-}
+        Console.WriteLine("Enter the reference: ");
+        string reference = Console.ReadLine();
 
-public class Journal
-{
-    public List<string> _prompts = new List<string>
-    {
-        "Where have you seen God's Hand in your life?",
-        "What are you grateful for today?",
-        "What made you smile today?",
-    };
+        var verse = new Verse(scripture);
+        verse.setReference(reference);
 
-    private Random _random = new Random();
+        var hiddenWords = new HashSet<string>();
+        var words = verse.Words.Select(w => w.Text).ToArray();
 
-    public List<JournalEntry> _entries { get; set;}
-
-    public Journal()
-    {
-        _entries = new List<JournalEntry>();
-    }
-
-    public void AddEntry()
-    {
-        Console.WriteLine("Tell me how your feeling today: ");
-        string content = Console.ReadLine();
-
-        string prompt = _prompts[_random.Next(_prompts.Count)];
-
-        JournalEntry newEntry = new JournalEntry(prompt, content);
-        _entries.Add(newEntry);
-    }
-
-    public void DisplayEntries()
-    {
-        foreach (var entry in _entries)
+        while(true)
         {
-            entry.DisplayEntry();
-            Console.WriteLine("--------------");
-        }
-    }
+            Console.Clear();
+            Console.WriteLine($"{verse.Reference}\n{HideWords(verse, hiddenWords)}\n");
 
-    public void SaveJouurnal(string filePath)
-    {
-        using (StreamWriter file = new StreamWriter(filePath))
-        {
-            foreach (var entry in _entries)
+            Console.WriteLine("Press enter to hide a word or type 'quit' to exit:" );
+            string userInput = Console.ReadLine();
+            if (userInput.ToLower() == "quit")
             {
-                file.WriteLine($"{entry._entryDateTime}/{entry._entryPrompt}/{entry._entryContent}");
+                break;
+            }
+
+            if (hiddenWords.Count < words.Length)
+            {
+                var wordToHide = words[new Random().Next(words.Length)];
+                hiddenWords.Add(wordToHide);
+            }
+
+            if (hiddenWords.Count == words.Length)
+            {
+                Console.WriteLine("All words are hidden!");
+                break;
             }
         }
     }
 
-    public void LoadJournal(string filePath)
+    static string HideWords(Verse verse, HashSet<string> hiddenWords)
     {
-        _entries.Clear();
+        return string.Join(" ", verse.Words.Select(word => hiddenWords.Contains(word.Text) ? "____" : word.Text));
+    }
 
-        using (StreamReader file = new StreamReader(filePath))
+    public class Word
+    {
+        public string Text {get; private set; }
+
+        public Word(string text)
         {
-            string line;
-            while((line = file.ReadLine()) != null)
-            {
-                var parts = line.Split('/');
-                if (parts.Length == 3)
-                {
-                    _entries.Add(new JournalEntry(parts[1], parts[2]) { _entryDateTime = DateTime.Parse(parts[0]) });
-                }
-            }
+            Text = text;
         }
     }
-    public class Program
+    public class Verse
     {
-        static void Main(string[] args)
+        public List<Word> Words {get; private set; }
+        public string Reference {get; private set; }
+
+        public Verse(string text)
         {
-            Journal myJournal = new Journal();
-            string userInput = "";
-
-            while (userInput != "exit")
-            {
-                Console.WriteLine("Enter 'add' to add a new entry, 'view' to view all entries, 'save' to save the journal, 'load' to load the journal, or 'exit' to quit:");
-                userInput = Console.ReadLine();
-
-                if (userInput == "add")
-                {
-                    myJournal.AddEntry();
-                }
-                else if (userInput == "view")
-                {
-                    myJournal.DisplayEntries();
-                }
-                else if (userInput == "save")
-                {
-                    Console.WriteLine("Enter the file path to save the journal: ");
-                    string filePath = Console.ReadLine();
-                    myJournal.SaveJouurnal(filePath);
-                }
-                else if (userInput == "load")
-                {
-                    Console.WriteLine("Enter the file path to load the journal: ");
-                    string filePath = Console.ReadLine();
-                    myJournal.LoadJournal(filePath);
-                }
-            }
+            Words = text.Split().Select(word => new Word(word)).ToList();
         }
-    }    
+
+        public void setReference(string reference)
+        {
+            Reference = reference;
+        } 
+    }
 }
