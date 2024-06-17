@@ -1,76 +1,104 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
-class Program
-{ 
-    static void Main()
+public class Listing
+{
+    protected string _prompt;
+    protected string _feeling;
+    protected int _duration;
+
+    public Listing(string prompt, string feeling, int duration)
     {
-        Console.WriteLine("Enter the scripture: ");
-        string scripture = Console.ReadLine();
-
-        Console.WriteLine("Enter the reference: ");
-        string reference = Console.ReadLine();
-
-        var verse = new Verse(scripture);
-        verse.setReference(reference);
-
-        var hiddenWords = new HashSet<string>();
-        var words = verse.Words.Select(w => w.Text).ToArray();
-
-        while(true)
-        {
-            Console.Clear();
-            Console.WriteLine($"{verse.Reference}\n{HideWords(verse, hiddenWords)}\n");
-
-            Console.WriteLine("Press enter to hide a word or type 'quit' to exit:" );
-            string userInput = Console.ReadLine();
-            if (userInput.ToLower() == "quit")
-            {
-                break;
-            }
-
-            if (hiddenWords.Count < words.Length)
-            {
-                var wordToHide = words[new Random().Next(words.Length)];
-                hiddenWords.Add(wordToHide);
-            }
-
-            if (hiddenWords.Count == words.Length)
-            {
-                Console.WriteLine("All words are hidden!");
-                break;
-            }
-        }
+        _prompt = prompt;
+        _feeling = feeling;
+        _duration = duration;
     }
 
-    static string HideWords(Verse verse, HashSet<string> hiddenWords)
+    public string GetListingInfo()
     {
-        return string.Join(" ", verse.Words.Select(word => hiddenWords.Contains(word.Text) ? "____" : word.Text));
-    }
-
-    public class Word
-    {
-        public string Text {get; private set; }
-
-        public Word(string text)
-        {
-            Text = text;
-        }
-    }
-    public class Verse
-    {
-        public List<Word> Words {get; private set; }
-        public string Reference {get; private set; }
-
-        public Verse(string text)
-        {
-            Words = text.Split().Select(word => new Word(word)).ToList();
-        }
-
-        public void setReference(string reference)
-        {
-            Reference = reference;
-        } 
+        return $"Prompt: {_prompt}/nFeeling: {_feeling}/nDuration: {_duration} minutes";
     }
 }
+
+public class Breathing
+{
+    protected string _description;
+    protected string _reflection;
+    protected string _prompts;
+    protected string _subtitle;
+
+    public Breathing(string description, string reflection, string prompts, string subtitle)
+    {
+        _description = description;
+        _reflection = reflection;
+        _prompts = prompts;
+        _subtitle = subtitle;
+    }
+
+    public string GetBreathingInfo()
+    {
+        return $"Description: {_description}/nReflection: {_reflection}/nPrompts: {_prompts}/nSubtitle: {_subtitle}";
+    }
+}
+
+public class Timer
+{
+    protected string _prompt;
+    protected int _seconds;
+    protected int _minutes;
+    protected int _hour;
+
+    public Timer(string prompt, int seconds = 600, int minutes = 60, int hour = 1)
+    {
+        _prompt = prompt;
+        _seconds = seconds;
+        _minutes = minutes;
+        _hour = hour;
+    }
+
+    public string GetTimerInfo()
+    {
+        return $"Prompt: {_prompt}/nSeconds: {_seconds}/nMinutes: {_minutes}/nHour: {_hour}";
+    }
+}
+
+public class Mindfulness
+{
+    protected string _endMessage;
+    protected string _animation;
+
+    public Mindfulness(string endMessage, string animation)
+    {
+        _endMessage = endMessage;
+        _animation = animation;
+    }
+
+    public string GetResult()
+    {
+        return $"Here is your result: {_endMessage}";
+    }
+
+    public string GetFrames()
+    {
+        return _animation;
+    }
+}
+
+public class Program
+{
+    static void Main(string[] args)
+    {
+        Listing listing = new Listing("Enter your prompt here", "Tell how you are feeling", 30);
+        Console.WriteLine(listing.GetListingInfo());
+
+        Breathing breathing = new Breathing("Enter your description here", "Enter your reflection here", "Enter your prompts here", "Enter your subtitle here");
+        Console.WriteLine(breathing.GetBreathingInfo());
+
+        Timer timer = new Timer("Enter your timer setting here");
+        Console.WriteLine(timer.GetTimerInfo());
+
+        Mindfulness mindfulness = new Mindfulness("Enter your end message here", "Enter your animation frames here");
+        Console.WriteLine(mindfulness.GetResult());
+        Console.WriteLine(mindfulness.GetFrames());
+    }
+}
+

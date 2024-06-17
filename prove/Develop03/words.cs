@@ -1,31 +1,36 @@
 
 
-    public class Word
+    public class Words
     {
         private string _text;
         private bool _hidden;
 
-        public Word(string text)
+        public Words(string text)
         {
             _text = text;
-            _hidden= true;
+            _hidden= false;
         }
 
         public void HideWord()
 
         {
-            _hidden= false;
+            _hidden= true;
         }
 
         public string GetText()
         {
             if(_hidden)
             {
-                return _text;
+                return "______";
             }
             else 
             {
-                return "_____";
+                return _text;
             }
+        }
+
+        public bool IsHidden()
+        {
+            return _hidden;
         }
     }
