@@ -1,20 +1,46 @@
 using System;
+using System.Reflection;
 
-public class Program 
+class Program 
 {
     static void Main(string[] args)
     {
+       while(true) 
 
-        Listing Listing = new Listing("Enter your prompt here", "Tell how you are feeling", 30);
-        Console.WriteLine(Listing.GetListingInfo());
+        {
+        Console.Clear();
+        Console.WriteLine("Mindfulness Activities");
+        Console.WriteLine("1.Reflection");
+        Console.WriteLine("2.Listing");
+        Console.WriteLine("3.Breathing");
+        Console.WriteLine("4.Exit");
+        Console.Write("Choose an activity: ");
+        string choice = Console.ReadLine();
 
-        Breathing breathing = new Breathing("Enter your description here","Enter your reflection here", "Enter your prompts here", "Enter your subtitle here");
-        Console.WriteLine(breathing.GetBreathingInfo());
+        if (choice == "1")
+        {
+            ReflectionActivity reflection = new ReflectionActivity();
+            reflection.Run();
+        }
+        else if (choice == "2")
+        {
+            ListingActivity listing = new ListingActivity();
+            listing.Run();
+        }
+        else if (choice == "3")
+        {
+            BreathingActivity breathing = new BreathingActivity();
+            breathing.Run();
+        }
+        else if (choice == "4")
+        {
+            break;
 
-        Timer timer = new Timer("Enter your timer setting here");
-        Console.WriteLine(timer.GetTimerInfo());
-
-        Mindfulness mindfulness = new Mindfulness("Enter your end messgae here","Enter your animation frames here");
-        Console.WriteLine(mindfulness.GetResult());
+        }
+        else
+        {
+            Console.WriteLine("Invalid choice. Please try again");
+        }
+        }
     }
 }

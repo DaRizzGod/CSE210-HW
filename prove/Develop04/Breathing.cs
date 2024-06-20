@@ -1,30 +1,26 @@
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 
-public class Breathing
+class BreathingActivity : Activity
 {
-    protected string _description = "";
-    protected string _reflection = "";
-    protected string _prompts = "";
-    protected string _subtitle = "";
+    public BreathingActivity() : base("Breathing", "This actvitiy will help you breathe in and out of your mouth."){ }
 
-    public Breathing(string description, string reflection, string prompts, string subtitle)
-        
+    public override void Run()
     {
-        _description = description;
-        _reflection = reflection;
-        _prompts = prompts;
-        _subtitle = subtitle;
-    }
+        base.Run();
 
-    public string GetBreathingInfo()
-    {
-        string info = "";
-        info += "Description: " +_description + "/n";
-        info += "Reflection: " + _reflection + "/n";
-        info += "Prompts: " + _prompts + "/n";
-        info += "Subtitle: " + _subtitle;
-        return info;
+        int halfDuration = _duration / 2;
+        for (int i = 0; i < halfDuration; i++)
+        {
+            Console.WriteLine("Breathe in. . .");
+            DisplaySpinner(5);
+            Console.WriteLine("Breahte out. . .");
+            DisplaySpinner(5);
+        }
+
+        End();
     }
+  
 
 }
 
